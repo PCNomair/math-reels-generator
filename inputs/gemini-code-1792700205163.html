@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deja Vu Infinity Nexus - Seamless Loop</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+    }
+    .video-frame {
+      width: 100vw;
+      max-width: calc(100vh * (9 / 16));
+      height: 100vh;
+      max-height: calc(100vw * (16 / 9));
+      background-color: #08090c;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    }
+    svg.viewport {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .infinity-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.18);
+      stroke-width: 4;
+      stroke-dasharray: 10 10;
+    }
+    .nexus-ring {
+      fill: none;
+      stroke: #00f2fe;
+      stroke-width: 3.5;
+      opacity: 0;
+    }
+    .orb-white {
+      fill: #ffffff;
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
+    }
+    .orb-cyan {
+      fill: #00f2fe;
+      filter: drop-shadow(0 0 24px #00f2fe);
+    }
+    .nexus-title {
+      font-size: 20px;
+      font-weight: 800;
+      fill: #8e9bb0;
+    }
+    .captions-box {
+      position: absolute;
+      bottom: 12%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      padding: 0 24px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .caption-item {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .caption-item.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .ar-text {
+      font-size: clamp(22px, 3.8vw, 36px);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.4;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+    .en-text {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: clamp(13px, 2.2vw, 19px);
+      color: #8e9bb0;
+      direction: ltr;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+<div class="video-frame" id="stage">
+  <svg class="viewport" viewBox="0 0 1080 1920">
+    <text id="topBanner" x="540" y="380" text-anchor="middle" class="nexus-title">نقطة التقاطع الزماني (Déjà Vu)</text>
+
+    <!-- Vertical Figure-8 (Lemniscate) Path -->
+    <path id="infinityPath" class="infinity-track" d="" />
+
+    <!-- Central Nexus Lock Rings -->
+    <circle id="nexusPulse" cx="540" cy="800" r="40" class="nexus-ring" />
+    <circle cx="540" cy="800" r="8" fill="#ffffff" opacity="0.4" />
+
+    <!-- Traveler Orbs -->
+    <circle id="orbA" cx="540" cy="800" r="24" class="orb-white" />
+    <circle id="orbB" cx="540" cy="800" r="24" class="orb-cyan" />
+  </svg>
+
+  <div class="captions-box">
+    <div class="caption-item active" id="c0">
+      <div class="ar-text">حاسس إننا التقينا من قبل... ولا هي أول مرة بتشوفني فيها؟</div>
+      <div class="en-text">Feel like we've met before... or is this your very first time here?</div>
+    </div>
+    <div class="caption-item" id="c1">
+      <div class="ar-text">العلم بيقول ما في صدف... عقلك الباطن سحبك لأنك مليت من التكرار.</div>
+      <div class="en-text">Science says there are no coincidences—your subconscious pulled you in.</div>
+    </div>
+    <div class="caption-item" id="c2">
+      <div class="ar-text">بس تخيل تضيع هاللحظة، وتدور علينا بين ملايين الحسابات وما تلاقينا!</div>
+      <div class="en-text">Imagine losing this moment and never finding us among millions again!</div>
+    </div>
+    <div class="caption-item" id="c3">
+      <div class="ar-text">لا تتركها للصدفة مرة تانية... اكبس متابعة هلق وسكّر الدائرة للأبد!</div>
+      <div class="en-text">Don't leave it to chance again. Hit follow and close the loop forever!</div>
+    </div>
+    <div class="caption-item" id="c4">
+      <div class="ar-text">وإلا رح ترجع تسأل حالك بكرا...</div>
+      <div class="en-text">Otherwise you'll find yourself asking tomorrow...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const infinityPath = document.getElementById('infinityPath');
+  const orbA = document.getElementById('orbA');
+  const orbB = document.getElementById('orbB');
+  const nexusPulse = document.getElementById('nexusPulse');
+  const topBanner = document.getElementById('topBanner');
+
+  const centerX = 540;
+  const centerY = 800;
+  const ampX = 290;
+  const ampY = 340;
+  const totalDuration = 16.0;
+
+  // Pre-build smooth SVG Figure-8 path
+  let dStr = '';
+  const steps = 120;
+  for (let i = 0; i <= steps; i++) {
+    const theta = (i / steps) * Math.PI * 2;
+    const x = centerX + Math.sin(theta * 2) * ampX;
+    const y = centerY + Math.sin(theta) * ampY;
+    dStr += (i === 0 ? 'M ' : ' L ') + x.toFixed(1) + ' ' + y.toFixed(1);
+  }
+  infinityPath.setAttribute('d', dStr + ' Z');
+
+  const captions = [
+    { start: 0.0, end: 3.0, el: document.getElementById('c0') },
+    { start: 3.0, end: 6.0, el: document.getElementById('c1') },
+    { start: 6.0, end: 10.0, el: document.getElementById('c2') },
+    { start: 10.0, end: 13.5, el: document.getElementById('c3') },
+    { start: 13.5, end: 16.0, el: document.getElementById('c4') }
+  ];
+
+  function seekTo(sec) {
+    const t = ((sec % totalDuration) + totalDuration) % totalDuration;
+
+    captions.forEach(c => {
+      if (t >= c.start && t < c.end) {
+        c.el.classList.add('active');
+      } else {
+        c.el.classList.remove('active');
+      }
+    });
+
+    // Lock envelope at the nexus (10.0s to 13.6s)
+    let lock = 0;
+    if (t >= 9.6 && t < 15.2) {
+      if (t < 10.8) {
+        lock = 0.5 - 0.5 * Math.cos(((t - 9.6) / 1.2) * Math.PI);
+      } else if (t < 13.6) {
+        lock = 1;
+      } else {
+        lock = 0.5 + 0.5 * Math.cos(((t - 13.6) / 1.6) * Math.PI);
+      }
+    }
+
+    // 2 complete figure-8 cycles over 16s
+    const baseTheta = (t / totalDuration) * Math.PI * 2 * 2;
+
+    // Orb A and Orb B travel in opposite phases, and collapse into exact center when lock = 1
+    const xA = centerX + Math.sin(baseTheta * 2) * ampX * (1 - lock);
+    const yA = centerY + Math.sin(baseTheta) * ampY * (1 - lock);
+
+    const xB = centerX + Math.sin((baseTheta + Math.PI) * 2) * ampX * (1 - lock);
+    const yB = centerY + Math.sin(baseTheta + Math.PI) * ampY * (1 - lock);
+
+    orbA.setAttribute('cx', String(xA));
+    orbA.setAttribute('cy', String(yA));
+    orbB.setAttribute('cx', String(xB));
+    orbB.setAttribute('cy', String(yB));
+
+    if (lock > 0.3) {
+      const pulseCycle = (t % 1.0) / 1.0;
+      nexusPulse.setAttribute('r', String(35 + pulseCycle * 150));
+      nexusPulse.style.opacity = String((1 - pulseCycle) * lock);
+      infinityPath.style.stroke = 'rgba(0, 242, 254, 0.45)';
+      topBanner.textContent = '+ تم إغلاق الدائرة: اضغط متابعة الآن';
+      topBanner.style.fill = '#00f2fe';
+    } else {
+      nexusPulse.style.opacity = '0';
+      infinityPath.style.stroke = 'rgba(255, 255, 255, 0.18)';
+      topBanner.textContent = 'نقطة التقاطع الزماني (Déjà Vu)';
+      topBanner.style.fill = '#8e9bb0';
+    }
+  }
+
+  let startTime = null;
+  function render(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = (timestamp - startTime) / 1000;
+    seekTo(elapsed % totalDuration);
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+  window.seekTo = seekTo;
+</script>
+</body>
+</html>

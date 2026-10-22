@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shepard's Tables Paradox - Seamless Loop</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #06070a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+    }
+    .video-frame {
+      width: 100vw;
+      max-width: calc(100vh * (9 / 16));
+      height: 100vh;
+      max-height: calc(100vw * (16 / 9));
+      background-color: #08090d;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.85);
+    }
+    svg.canvas {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .table-leg {
+      stroke: rgba(255, 255, 255, 0.35);
+      stroke-width: 5;
+      stroke-linecap: round;
+    }
+    .table-top-base {
+      fill: #141824;
+      stroke: rgba(255, 255, 255, 0.4);
+      stroke-width: 3;
+    }
+    .table-flying {
+      fill: rgba(0, 245, 212, 0.25);
+      stroke: #00f5d4;
+      stroke-width: 4;
+      filter: drop-shadow(0 0 18px rgba(0, 245, 212, 0.7));
+    }
+    .meta-title {
+      font-size: 20px;
+      font-weight: 700;
+      fill: #ffffff;
+      letter-spacing: 2px;
+      opacity: 0.85;
+    }
+    .badge-label {
+      font-family: -apple-system, monospace;
+      font-size: 16px;
+      font-weight: 700;
+      fill: #00f5d4;
+      letter-spacing: 1px;
+    }
+    .captions-box {
+      position: absolute;
+      bottom: 11%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      padding: 0 24px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .caption-item {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .caption-item.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .ar-text {
+      font-size: clamp(22px, 3.8vw, 35px);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.4;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.9);
+    }
+    .en-text {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: clamp(13px, 2.2vw, 19px);
+      color: #929bb0;
+      direction: ltr;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+<div class="video-frame" id="stage">
+  <svg class="canvas" viewBox="0 0 1080 1920">
+    <text x="540" y="440" text-anchor="middle" class="meta-title">SHEPARD'S TABLETOP ILLUSION</text>
+    <text x="540" y="475" text-anchor="middle" class="badge-label" id="statusBadge">APPEAR COMPLETELY DIFFERENT</text>
+
+    <!-- Table 1 (Left: Appears long and thin) -->
+    <!-- Centroid: (290, 850) -->
+    <g id="tableLeftGroup">
+      <line x1="170" y1="880" x2="170" y2="1080" class="table-leg" />
+      <line x1="410" y1="720" x2="410" y2="920" class="table-leg" />
+      <line x1="230" y1="990" x2="230" y2="1140" class="table-leg" />
+      <line x1="350" y1="700" x2="350" y2="860" class="table-leg" />
+      <!-- Top parallelogram: Length=340, Width=120, Angle=60 deg -->
+      <polygon id="tableTopLeft" points="230,990 170,880 350,700 410,810" class="table-top-base" />
+    </g>
+
+    <!-- Table 2 (Right: Appears broad and square) -->
+    <!-- Centroid: (790, 850) -->
+    <g id="tableRightGroup">
+      <line x1="620" y1="850" x2="620" y2="1050" class="table-leg" />
+      <line x1="960" y1="850" x2="960" y2="1050" class="table-leg" />
+      <line x1="680" y1="910" x2="680" y2="1110" class="table-leg" />
+      <line x1="900" y1="790" x2="900" y2="990" class="table-leg" />
+      <!-- Exactly the same parallelogram rotated by 90 degrees -->
+      <polygon points="680,910 620,850 900,790 960,850" class="table-top-base" />
+    </g>
+
+    <!-- Morphing Top that detaches from Table 1, rotates 90 deg, and overlays Table 2 -->
+    <polygon id="flyingTop" points="" class="table-flying" />
+  </svg>
+
+  <div class="captions-box">
+    <div class="caption-item active" id="c0">
+      <div class="ar-text">دراسة أثبتت إن 99% من البشر بفرزوا أبعاد هندسية غلط بمجرد تغيير الزاوية!</div>
+      <div class="en-text">Studies prove 99% misjudge geometric dimensions simply by rotation!</div>
+    </div>
+    <div class="caption-item" id="c1">
+      <div class="ar-text">لو سألتك مين أطول وأنحف بين هالطاولتين؟</div>
+      <div class="en-text">If I ask which tabletop is longer and thinner?</div>
+    </div>
+    <div class="caption-item" id="c2">
+      <div class="ar-text">رح تحلف إن اليسار أطول بكتير من اليمين المستطيلة!</div>
+      <div class="en-text">You'd swear the left is far longer than the right!</div>
+    </div>
+    <div class="caption-item" id="c3">
+      <div class="ar-text">بس قيس السطح ودوّره: رح ينطبق عليه بالمليمتر! متطابقتين 100%!</div>
+      <div class="en-text">Rotate it: it matches perfectly down to the millimeter! 100% identical!</div>
+    </div>
+    <div class="caption-item" id="c4">
+      <div class="ar-text">بصرك بحسب العمق ثلاثي الأبعاد ويخدعك، تماماً متل ما أكدت...</div>
+      <div class="en-text">Your vision invents 3D depth and tricks you, exactly as proven by...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const flyingTop = document.getElementById('flyingTop');
+  const statusBadge = document.getElementById('statusBadge');
+
+  const totalDuration = 16.0;
+
+  // Base Parallelogram relative to centroid (0,0)
+  // At angle 0:
+  const basePts = [
+    { x: -60, y: 140 },
+    { x: -120, y: 30 },
+    { x: 60, y: -150 },
+    { x: 120, y: -40 }
+  ];
+
+  const pos1 = { x: 290, y: 845, angle: 0 };
+  const pos2 = { x: 790, y: 850, angle: 90 }; // Exact 90 deg rotation matches Table 2!
+
+  function getTransformedPoints(pos) {
+    const rad = (pos.angle * Math.PI) / 180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+
+    return basePts.map(p => {
+      const rx = p.x * cos - p.y * sin;
+      const ry = p.x * sin + p.y * cos;
+      return `${pos.x + rx},${pos.y + ry}`;
+    }).join(' ');
+  }
+
+  const captions = [
+    { start: 0.0, end: 3.2, el: document.getElementById('c0') },
+    { start: 3.2, end: 6.2, el: document.getElementById('c1') },
+    { start: 6.2, end: 10.0, el: document.getElementById('c2') },
+    { start: 10.0, end: 13.5, el: document.getElementById('c3') },
+    { start: 13.5, end: 16.0, el: document.getElementById('c4') }
+  ];
+
+  function seekTo(sec) {
+    const t = ((sec % totalDuration) + totalDuration) % totalDuration;
+
+    captions.forEach(c => {
+      if (t >= c.start && t < c.end) c.el.classList.add('active');
+      else c.el.classList.remove('active');
+    });
+
+    // 0.0 - 5.5: Static on Table 1 (Brain sees distinct sizes)
+    // 5.5 - 9.8: Glides to Table 2 while rotating 90 degrees
+    // 9.8 - 13.5: Locks over Table 2 to demonstrate identical match
+    // 13.5 - 16.0: Smooth return to Table 1 for seamless loop
+    let progress = 0;
+    if (t < 5.5) {
+      progress = 0;
+      statusBadge.textContent = 'OPTICAL ILLUSION ACTIVE';
+      statusBadge.style.fill = '#ff007f';
+    } else if (t < 9.8) {
+      const p = (t - 5.5) / 4.3;
+      progress = 0.5 - 0.5 * Math.cos(p * Math.PI);
+      statusBadge.textContent = 'ROTATING & OVERLAYING';
+      statusBadge.style.fill = '#00f5d4';
+    } else if (t < 13.5) {
+      progress = 1.0;
+      statusBadge.textContent = '100% IDENTICAL DIMENSIONS';
+      statusBadge.style.fill = '#00f5d4';
+    } else {
+      const p = (t - 13.5) / 2.5;
+      progress = 0.5 + 0.5 * Math.cos(p * Math.PI);
+      statusBadge.textContent = 'RETURNING TO ILLUSION';
+      statusBadge.style.fill = '#ffb703';
+    }
+
+    const currentPos = {
+      x: pos1.x + (pos2.x - pos1.x) * progress,
+      y: pos1.y + (pos2.y - pos1.y) * progress - Math.sin(progress * Math.PI) * 50, // Slight lift during transit
+      angle: pos1.angle + (pos2.angle - pos1.angle) * progress
+    };
+
+    flyingTop.setAttribute('points', getTransformedPoints(currentPos));
+  }
+
+  let startTime = null;
+  function render(timestamp) {
+    if (!startTime) startTime = timestamp;
+    let elapsed = (timestamp - startTime) / 1000;
+    seekTo(elapsed % totalDuration);
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+  window.seekTo = seekTo;
+</script>
+</body>
+</html>

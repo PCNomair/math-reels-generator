@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Thumb Reflex Paradox - Seamless Loop</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0d0f12;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+    }
+    .video-frame {
+      width: 100vw;
+      max-width: calc(100vh * (9 / 16));
+      height: 100vh;
+      max-height: calc(100vw * (16 / 9));
+      background-color: #f5f3ec;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    svg.canvas {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .axis-line {
+      stroke: #ccc;
+      stroke-width: 2.5;
+      stroke-dasharray: 8 8;
+    }
+    .tension-wire {
+      fill: none;
+      stroke: #1a1a1a;
+      stroke-width: 5;
+      stroke-linecap: round;
+    }
+    .sovereign-ring {
+      fill: none;
+      stroke: #ff3b30;
+      stroke-width: 4;
+      opacity: 0;
+    }
+    .node-impulse {
+      fill: #111;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.25));
+    }
+    .node-will {
+      fill: #ff3b30;
+      filter: drop-shadow(0 6px 14px rgba(255,59,48,0.45));
+    }
+    .label-muted {
+      font-size: 18px;
+      font-weight: 700;
+      fill: #777;
+    }
+    .label-accent {
+      font-size: 21px;
+      font-weight: 800;
+      fill: #ff3b30;
+    }
+    .captions-box {
+      position: absolute;
+      bottom: 12%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      padding: 0 24px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .caption-item {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .caption-item.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .ar-text {
+      font-size: clamp(22px, 3.8vw, 36px);
+      font-weight: 700;
+      color: #111;
+      line-height: 1.4;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+    .en-text {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: clamp(13px, 2.2vw, 19px);
+      color: #666;
+      direction: ltr;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+<div class="video-frame" id="stage">
+  <svg class="canvas" viewBox="0 0 1080 1920">
+    <!-- Vertical Swipe Axis vs Horizontal Conscious Axis -->
+    <line x1="540" y1="300" x2="540" y2="1240" class="axis-line" />
+    <line x1="160" y1="770" x2="920" y2="770" class="axis-line" />
+
+    <text x="540" y="265" text-anchor="middle" class="label-muted">اتجاه السحب اللاواعي (Auto-Swipe)</text>
+    <text x="540" y="1290" text-anchor="middle" class="label-accent" id="bottomStatus">نقطة استعادة السيطرة (+ متابعة)</text>
+
+    <!-- Elastic Tension String -->
+    <path id="tensionPath" d="M 160 770 Q 540 770 920 770" class="tension-wire" />
+
+    <!-- Anchor Terminals -->
+    <circle cx="160" cy="770" r="12" fill="#111" />
+    <circle cx="920" cy="770" r="12" fill="#111" />
+
+    <!-- Sovereign Control Pulse Ring -->
+    <circle id="sovereignRing" cx="540" cy="770" r="50" class="sovereign-ring" />
+
+    <!-- The Thumb / Mind Node -->
+    <circle id="thumbNode" cx="540" cy="620" r="32" class="node-impulse" />
+  </svg>
+
+  <div class="captions-box">
+    <div class="caption-item active" id="c0">
+      <div class="ar-text">إصبعك هلق معلّق بالهوا... وعم يحكّك لتعمل سكيب، صح؟</div>
+      <div class="en-text">Your thumb is hovering right now... itching to swipe away, right?</div>
+    </div>
+    <div class="caption-item" id="c1">
+      <div class="ar-text">طبيعي، لأن الشركات دفعت مليارات لتتحرك إيدك أسرع من عقلك!</div>
+      <div class="en-text">Billions were spent training your hand to move faster than your brain.</div>
+    </div>
+    <div class="caption-item" id="c2">
+      <div class="ar-text">كل ثانية بتضل فيها هون، إنت عم تكسر برمجتهم وتسترجع قرارك.</div>
+      <div class="en-text">Every second you stay, you break their script and reclaim control.</div>
+    </div>
+    <div class="caption-item" id="c3">
+      <div class="ar-text">أثبت لحالك مين بيتحكم بالتاني... استعمل نفس الإصبع واكبس متابعة!</div>
+      <div class="en-text">Prove who's in charge—use that exact thumb to hit follow right now!</div>
+    </div>
+    <div class="caption-item" id="c4">
+      <div class="ar-text">ووقتها بس رح تكتشف ليش...</div>
+      <div class="en-text">And only then will you realize why...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const tensionPath = document.getElementById('tensionPath');
+  const thumbNode = document.getElementById('thumbNode');
+  const sovereignRing = document.getElementById('sovereignRing');
+
+  const totalDuration = 16.0;
+  const captions = [
+    { start: 0.0, end: 3.0, el: document.getElementById('c0') },
+    { start: 3.0, end: 6.0, el: document.getElementById('c1') },
+    { start: 6.0, end: 10.0, el: document.getElementById('c2') },
+    { start: 10.0, end: 13.5, el: document.getElementById('c3') },
+    { start: 13.5, end: 16.0, el: document.getElementById('c4') }
+  ];
+
+  function seekTo(sec) {
+    const t = ((sec % totalDuration) + totalDuration) % totalDuration;
+
+    captions.forEach(c => {
+      if (t >= c.start && t < c.end) {
+        c.el.classList.add('active');
+      } else {
+        c.el.classList.remove('active');
+      }
+    });
+
+    // Timeline:
+    // 0.0 - 6.0: Erratic upward tugging (simulating involuntary swipe reflex)
+    // 6.0 - 10.0: Resisting pull and snapping into exact sovereign center (770)
+    // 10.0 - 13.8: Locked in red sovereign equilibrium with expanding wave rings
+    // 13.8 - 16.0: Smoothly returning to initial t=0 upward tension position (y=580)
+    let nodeY = 580;
+
+    if (t < 6.0) {
+      // Involuntary upward tugging wave that starts and ends cleanly
+      const tugWave = Math.sin((t / 6.0) * Math.PI * 4) * 95;
+      nodeY = 580 - Math.abs(tugWave);
+      thumbNode.setAttribute('class', 'node-impulse');
+      tensionPath.style.stroke = '#1a1a1a';
+      sovereignRing.style.opacity = '0';
+    } else if (t < 10.0) {
+      // Snap back to center equilibrium (y = 770)
+      const p = (t - 6.0) / 4.0;
+      const damp = Math.pow(1 - p, 2) * Math.cos(p * Math.PI * 5);
+      nodeY = 770 - damp * 190;
+      thumbNode.setAttribute('class', p > 0.4 ? 'node-will' : 'node-impulse');
+      tensionPath.style.stroke = p > 0.4 ? '#ff3b30' : '#1a1a1a';
+      sovereignRing.style.opacity = '0';
+    } else if (t < 13.8) {
+      // Sovereign Lock State
+      nodeY = 770;
+      thumbNode.setAttribute('class', 'node-will');
+      tensionPath.style.stroke = '#ff3b30';
+
+      const ringProg = ((t - 10.0) % 1.2) / 1.2;
+      sovereignRing.setAttribute('cy', '770');
+      sovereignRing.setAttribute('r', String(36 + ringProg * 140));
+      sovereignRing.style.opacity = String((1 - ringProg) * 0.85);
+    } else {
+      // Seamless return to t=0 position (y = 580)
+      sovereignRing.style.opacity = '0';
+      const retP = (t - 13.8) / 2.2;
+      const ease = 0.5 - 0.5 * Math.cos(retP * Math.PI);
+      nodeY = 770 + (580 - 770) * ease;
+      thumbNode.setAttribute('class', ease > 0.6 ? 'node-impulse' : 'node-will');
+      tensionPath.style.stroke = ease > 0.6 ? '#1a1a1a' : '#ff3b30';
+    }
+
+    thumbNode.setAttribute('cy', String(nodeY));
+    // Quadratic control point so curve passes exactly through (540, nodeY)
+    const ctrlY = 2 * nodeY - 770;
+    tensionPath.setAttribute('d', `M 160 770 Q 540 ${ctrlY} 920 770`);
+  }
+
+  let startTime = null;
+  function render(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = (timestamp - startTime) / 1000;
+    seekTo(elapsed % totalDuration);
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+  window.seekTo = seekTo;
+</script>
+</body>
+</html>
