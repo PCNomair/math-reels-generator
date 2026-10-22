@@ -19,7 +19,7 @@ Create TWO original, mathematically rigorous, visually distinct 24-second vertic
 - Deep black/obsidian background, white primary text, slate secondary lines, and one bright accent color (e.g., #CCFF00 or #00F0FF).
 - Arabic text containers MUST set dir="rtl".
 - Mathematical expressions MUST be isolated in <span dir="ltr" style="unicode-bidi: isolate; display: inline-block;">...</span>.
-- Implement window.seekTo = function(seconds) { ... } for deterministic rendering.
+- Implement window.seekTo = function(seconds) for deterministic rendering.
 </visual_identity>
 
 <output_contract>
